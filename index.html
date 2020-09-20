@@ -1,0 +1,422 @@
+<head>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v0.3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Catamaran" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Catamaran', sans-serif;
+            margin: 20px;
+            top: 20px;
+            right: 20px;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        line {
+            stroke: lightgray;
+        }
+
+        .arc path {
+            stroke: white;
+        }
+
+        .arc text {
+            fill: white;
+            stroke: none;
+            pointer-events: none;
+        }
+
+        .text-path {
+            stroke: none;
+            fill: none;
+        }
+
+        p.red{
+            background-color: red
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Explorations in Visual Mediums - Time</h1>
+    <h2>Dataset</h2>
+    <p>The 311 service-request dataset is a repository of all the service-requests the 311 call center has received from 2010 - present (at time of writing September 2020). As a result it represents a lot of service requests, 23mil+, with over 40 columns of associated data including type of service request and location information. </p>
+    <h3>311 SR Data Snapshot</h3>
+    <img src="./311_SR_Screenshot.png" style="max-height: 200px; max-width: 500px;" />
+    <br>
+    <p>The original datasource is available here: <a href="https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9">311 Service Request Dataset</a></p>
+    <h3>Database Profile</h3>
+    <p>I've included a profile of the dataset using the pandas module in Python. This provides an overview of what's included in this dataset as well as some detail around individual fields. I used this to shape my initial considerations as it related to the assignment.</p>
+    <a href="./311_SR.html">311 Service Request Dataset</a>
+    <h2>Temporal Data</h2>
+    <p>The assignment is to map a temporal data structure, more commonly known as data that relates to time. Temporal data is an essential part of data visualization as a storytelling technique due to the universal understanding of illustrating change through the passage of time. The 311 service-request dataset contains temporal values in the form of timestamps related to events concerning these service-requests, including when the service-request was initially received and when it was closed.</p>
+    <h3>Theory of Relativity</h3>
+    <p>In the Special Theory of Relativity, Einstein determined that time is relative -- in other words, the rate at which time passes depends on your frame of reference. Einstein illustrates this theory in relation to the movement of the observer, but in human psychology we can see this as well. As an example, imagine a situation where two individuals are waiting for a bus: one is reading a book and the other is without anything to do, looking impatiently towards where the bus will be arriving from. These two would likely experience the same event differently, even if they waited for the bus for the same period of time. </p>
+    <p>The relative element, or difference, can be expressed through two data types: a classification of the event and how that event was measured. In the bus stop example: waiting for the bus would be the event and the time of waiting would be the measurement, relativity would be experienced in the event. However in other cases the event could be consistent but the measurement would be different.</p>
+    <p>Approaches to temporal visualizations fall under two primary categories which emphasize certain characteristics of time and how it is measured. </p>
+    <h4>Sequential Time</h4>
+    <p>A starting point that moves towards the future, expresses the irreversible and cumulative nature of time</p>
+    <p class="red">IMG either gif or Ashley's image</p>
+    <h4>Cyclical Time</h4>
+    <p>Cyclical time, expresses the repetitive nature of time many often emphasizing a measurement of time relating to the earth's rotation around the sun.</p>
+    <p class="red">IMG either gif or Ashley's image</p>
+    <h2>Filtering Dataset</h2>
+    <p>Working in the python module pandas, I filtered my data down to specific fields to begin focusing on the temporal element: </p>
+    <ul>
+        <li>Unique Key a unique identifier tagged to all Service Requests</li>
+        <li>Created Date: a timestamp of when the Service Request was originally opened</li>
+        <li>Complaint Type: a category assigned to each Service Request, ie noise complaint or issue with a tree</li>
+    </ul>
+    <p>Using the timestamp, I converted the created date into two separate columns and saved this as a new csv:</p>
+    <ul>
+            <li>Year the Service Request was opened</li>
+            <li>Week number of the year the Service Request was opened</li>
+        </ul>
+    <!-- Future thought to redo this part of the documentation and illustrate the filtering as visual,
+    by showing what columns are in the first dataset, second dataset, and third. Sizing of tables according to
+    memory (12gb, 2gb, 8mb) -->
+    <p>My data was a much more manageable size at roughly 2.5gbs compared to the original 12gbs but I needed to further focus the data around temporal measurements in order to visualize it. I grouped all complaints by year, week and complaint type. From here I had a much more manageable dataset that was down to roughly 3mbs!</p>
+    
+    <h3>Iteration 1</h3>
+    <h4>Stacked Area Chart</h4>  
+    <img src="./311_SR_By_Week.png" style="max-height: 400px; max-width: 600px;" /><img src="./311_SR_By_Month.png" style="max-height: 400px; max-width: 600px;" />
+    <p>Using Excel, I created a stacked area chart showing the weeks of the year on the x-axis, number of complaints on the y-axis, and each year as a bar stacked on top of each other. 
+    It was immediate that there is a certain cyclical pattern when looking at each year on top of each other as some weeks in every year had noticeably higher complaints than others.
+    I also prepared a monthly version of the total service requests. Its apparent when the time-scale is extended to months the average request volume smooths out.</p>
+    <h3>Iteration 2</h3>
+    <p>While I like how easy it is to observe these patterns I wanted to emphasize the sequential nature of the years and how each year before it feeds into the next. I was determined I wanted this to be in d3 as I’m new to javascript and html and began exploring radial options and considered a few:</p>
+    <h4>Stacked Radial Area</h4>    
+    <img src="./Stacked_Radial_Area.png" style="max-height: 400px; max-width: 600px;" />
+    <br>
+    <a href="https://bl.ocks.org/mbostock/3048740">Source</a>
+    <p>Good for observing the cyclicality of time but didn't emphasize the sequential element.</p>
+    <h4>Condegram Spiral</h4>    
+    <img src="./Condegram_Spiral.png" style="max-height: 400px; max-width: 600px;" />
+    <br>
+    <a href="https://bl.ocks.org/arpitnarechania/027e163073864ef2ac4ceb5c2c0bf616">Source</a>
+    <p>I settled on the spiral as it illustrates the sequential nature of time in a natural way. I was initially drawn to a spiral histogram like this one pictured but it felt difficult comparing the bars as the periods aren't aligned.</p>
+    <h3>Spiral Heatmap</h3>
+    <p>For the final version I stuck with months as the time period. As a result the final heatmap doesn’t have a large variation in color which might make it more visually striking, 
+        however the version with weeks had too many pieces which greatly distorted the size in earlier years. 
+        In this version its easy to see how overall request volume has increased in later years, presumably due to the roll-out of the online 311 service request channel.
+        Additionally the summer 2020 months see a large increase in total call volume.
+                 
+        For a future enhancement I’d like to add a filter to this that enables selecting 311 complaints by type. When I looked at the data it was apparent some complaint categories have larger flucuations (fireworks for example) than others. It would be nice to explore complaint categories through interactivity.</p>
+    <h4>311 Service Requests by Month: 2010 to 2020</h4>    
+    <div id="chart"></div>
+    <div id="legend"></div>
+    <a href="https://bl.ocks.org/tomshanley/5862cfadb015448eb8b763e7ed8d3bdc">Template Source</a>
+    <script>
+        const radians = 0.0174532925;
+
+        //CHART CONSTANTS
+        const chartRadius = 250;
+        const chartWidth = chartRadius * 2;
+        const chartHeight = chartRadius * 2;
+      	const labelRadius = chartRadius + 5;
+        const margin = { "top": 40, "bottom": 40, "left": 40, "right": 40 };
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        //CHART OPTIONS
+        const holeRadiusProportion = 0.3; //fraction of chartRadius. 0 gives you some pointy arcs in the centre.
+        const holeRadius = holeRadiusProportion * chartRadius;
+        const segmentsPerCoil = 12; //number of coils. for this example, I have 12 months per year. But you change to whatever suits your data. 
+        const segmentAngle = 360 / segmentsPerCoil;
+        var coils; //number of coils, based on data.length / segmentsPerCoil
+        var coilWidth; //remaining chartRadius (after holeRadius removed), divided by coils + 1. I add 1 as the end of the coil moves out by 1 each time
+
+        //SCALES
+        var colour = d3.scaleSequential(d3.interpolateYlGnBu);
+
+        //CREATE SVG AND A G PLACED IN THE CENTRE OF THE SVG
+        const svg = d3.select("#chart")
+            .append("svg")
+            .attr("width", chartWidth + margin.left + margin.right)
+            .attr("height", chartHeight + margin.top + margin.bottom);
+
+        const g = svg.append("g")
+            .attr("transform", "translate("
+            + (margin.left + chartRadius)
+            + ","
+            + (margin.top + chartRadius) + ")");
+
+        //LOAD THE DATA
+        d3.csv("d3_months_data.csv", convertTextToNumbers, function (error, data) {
+            if (error) { throw error; };
+
+            //ENSURE THE DATA IS SORTED CORRECTLY, IN THIS CASE BY YEAR AND MONTH
+            //THE SPIRAL WILL START IN THE MIDDLE AND WORK OUTWARDS
+            data.sort(function (a, b) {
+                return a.year - b.year || a.month - b.month;
+            });
+
+            //CALCULATE AND STORE THE REMAING
+            var dataLength = data.length;
+            coils = Math.ceil(dataLength / segmentsPerCoil);
+            coilWidth = (chartRadius * (1 - holeRadiusProportion)) / (coils + 1);
+            //console.log("coilWidth: " + coilWidth);
+            var dataExtent = d3.extent(data, function (d) { return d.value; });
+            colour.domain(dataExtent);
+
+            //ADD LABELS AND GRIDS FOR EACH MONTH FIRST
+            //SO THE GRID LINES APPEAR BEHIND THE SPIRAL
+            var monthLabels = g.selectAll(".month-label")
+                .data(months)
+                .enter()
+                .append("g")
+                .attr("class", "month-label");
+
+            monthLabels.append("text")
+                .text(function (d) { return d; })
+                .attr("x", function (d, i) {
+                    let labelAngle = (i * segmentAngle) + (segmentAngle / 2);
+                    return x(labelAngle, labelRadius);
+                })
+                .attr("y", function (d, i) {
+                    let labelAngle = (i * segmentAngle) + (segmentAngle / 2);
+                    return y(labelAngle, labelRadius);
+                })
+                .style("text-anchor", function (d, i) {
+                    return i < (months.length / 2) ? "start" : "end";
+                });
+
+            monthLabels.append("line")
+                .attr("x2", function (d, i) {
+                    let lineAngle = (i * segmentAngle);
+                    let lineRadius = chartRadius + 10;
+                    return x(lineAngle, lineRadius);
+                })
+                .attr("y2", function (d, i) {
+                    let lineAngle = (i * segmentAngle);
+                    let lineRadius = chartRadius + 10;
+                    return y(lineAngle, lineRadius);
+                });
+
+            //ASSUMING DATA IS SORTED, CALCULATE EACH DATA POINT'S SEGMENT VERTICES AND CONTROL POINTS
+            data.forEach(function (d, i) { calculateArc(d, i); });
+
+            var arcs = g.selectAll(".arc")
+                .data(data)
+                .enter()
+                .append("g")
+                .attr("class", "arc");
+
+            //STRAIGHT EDGES
+            /*
+            arcs.append("path")
+                .attr("d", function (d) {
+                    let M = "M " + d.x1 + " " + d.y1;
+                    let L1 = "L " + d.x2 + " " + d.y2;
+                    let L2 = "L " + d.x3 + " " + d.y3;
+                    let L3 = "L " + d.x4 + " " + d.y4;
+                    return M + " " + L1 + " " + L2 + " " + L3 + " Z"
+                })
+                //.style("fill", function (d) { return colour(d.value); })
+                .style("fill", "white")
+                .style("stroke", "white")
+            */
+
+            //CURVED EDGES
+            arcs.append("path")
+                .attr("class", "arc-segment")
+                .attr("d", function (d) {
+                    //start at vertice 1
+                    let start = "M " + d.x1 + " " + d.y1;
+                    //inner curve to vertice 2
+                    let side1 = " Q " + d.controlPoint1x + " " + d.controlPoint1y + " " + d.x2 + " " + d.y2;
+                    //straight line to vertice 3
+                    let side2 = "L " + d.x3 + " " + d.y3;
+                    //outer curve vertice 4
+                    let side3 = " Q " + d.controlPoint2x + " " + d.controlPoint2y + " " + d.x4 + " " + d.y4;
+                    //combine into string, with closure (Z) to vertice 1
+                    return start + " " + side1 + " " + side2 + " " + side3 + " Z"
+                })
+                .style("fill", function (d) { return colour(d.value); })
+                .on("mouseover", function (d) {
+                    //HIGHLIGHT ARCS FROM THE SAME MONTH, OR WITHIN A 6 MONTH PERIOD EITHER SIDE
+                    let thisMonth = d.month;
+                    let lowerLimit = d.index - 6;
+                    let upperLimit = d.index + 6;
+                    arcs.selectAll(".arc-segment")
+                        .style("opacity", function (a) {
+                            if (a.month == thisMonth) { 
+                                return 1;
+                            } else if (a.index > lowerLimit && a.index < upperLimit) {
+                                return 1;
+                            } else {
+                                return 0.1
+                            };
+                        });
+                })
+                .on("mouseout", function (d) {
+                    arcs.selectAll(".arc-segment").style("opacity", 1);
+                });
+
+            //ADD LABELS FOR THE YEAR AT THE START OF EACH COIL (IE THE FIRST MONTH)
+            var yearLabels = arcs.filter(function (d) { return d.month == 1; }).raise();
+
+            yearLabels.append("path")
+                .attr("class", "text-path")
+                .attr("id", function (d) { return "path-" + d.year; })
+                .attr("d", function (d) {
+                    //start at vertice 1
+                    let start = "M " + d.x1 + " " + d.y1;
+                    //inner curve to vertice 2
+                    let side1 = " Q " + d.controlPoint1x + " " + d.controlPoint1y + " " + d.x2 + " " + d.y2;
+                    return start + side1;
+                });
+
+            yearLabels.append("text")
+                .attr("class", "year-label")
+                .attr("x", 3)
+                .attr("dy", -5)
+                .append("textPath")
+                .attr("xlink:href", function (d) {
+                    return "#path-" + d.year;
+                })
+                .text(function (d) { return d.year; })
+
+            //DRAW LEGEND
+            const legendWidth = chartRadius;
+            const legendHeight = 20;
+            const legendPadding = 40;
+
+            var legendSVG = d3.select("#legend")
+                .append("svg")
+                .attr("width", legendWidth + legendPadding + legendPadding)
+                .attr("height", legendHeight + legendPadding + legendPadding);
+
+            var defs = legendSVG.append("defs");
+
+            var legendGradient = defs.append("linearGradient")
+                .attr("id", "linear-gradient")
+                .attr("x1", "0%")
+                .attr("y1", "0%")
+                .attr("x2", "100%")
+                .attr("y2", "0%");
+
+            let noOfSamples = 20;
+            let dataRange = dataExtent[1] - dataExtent[0];
+            let stepSize = dataRange / noOfSamples;
+
+            for (i = 0; i < noOfSamples; i++) {
+                legendGradient.append("stop")
+                    .attr("offset", (i / (noOfSamples - 1)))
+                    .attr("stop-color", colour(dataExtent[0] + (i * stepSize)));
+            }
+
+            var legendG = legendSVG.append("g")
+                .attr("class", "legendLinear")
+                .attr("transform", "translate(" + legendPadding + "," + legendPadding + ")");
+
+            legendG.append("rect")
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", legendWidth)
+                .attr("height", legendHeight)
+                .style("fill", "url(#linear-gradient)");
+
+            legendG.append("text")
+                .text("Fewer requests")
+                .attr("x", 0)
+                .attr("y", legendHeight - 35)
+                .style("font-size", "12px");
+
+            legendG.append("text")
+                .text("More requests")
+                .attr("x", legendWidth)
+                .attr("y", legendHeight - 35)
+                .style("text-anchor", "end")
+                .style("font-size", "12px");
+
+        });
+
+        //RETURNS THE X COORDINATE GIVEN A CERTAIN RADIUS AND ANGLE
+        function x(angle, radius) {
+            //change to clockwise
+            let a = 360 - angle;
+            //start from 12 o'clock
+            a = a + 180;
+            return radius * Math.sin(a * radians);
+        };
+
+        //RETURNS THE Y COORDINATE GIVEN A CERTAIN RADIUS AND ANGLE
+        function y(angle, radius) {
+            //change to clockwise
+            let a = 360 - angle;
+            //start from 12 o'clock
+            a = a + 180;
+            return radius * Math.cos(a * radians);
+        };
+
+        //CALCULATES THE VERTICES AND CONTROL POINTS FOR DRAWING EACH ARC'S PATH
+        function calculateArc(d, i) {
+
+            d.index = i;
+
+            let coil = Math.floor(i / segmentsPerCoil);
+            let position = i - (coil * segmentsPerCoil);
+
+            //console.log("positions: " + i + " " + coil + " " + position);
+
+            let startAngle = position * segmentAngle;
+            let endAngle = (position + 1) * segmentAngle;
+
+            //console.log("angles: " + startAngle + " " + endAngle);
+            //console.log(holeRadius + " " + segmentsPerCoil + " " + coilWidth)
+
+            let startInnerRadius = holeRadius + ((i / segmentsPerCoil) * coilWidth)
+            let startOuterRadius = holeRadius + ((i / segmentsPerCoil) * coilWidth) + coilWidth;
+            let endInnerRadius = holeRadius + (((i + 1) / segmentsPerCoil) * coilWidth)
+            let endOuterRadius = holeRadius + (((i + 1) / segmentsPerCoil) * coilWidth) + coilWidth;
+
+            //console.log("start radi: " + startInnerRadius + " " + startOuterRadius);
+            //console.log("end radi: " + endInnerRadius + " " + endOuterRadius);
+
+            //vertices of each segment
+            d.x1 = x(startAngle, startInnerRadius);
+            d.y1 = y(startAngle, startInnerRadius);
+
+            d.x2 = x(endAngle, endInnerRadius);
+            d.y2 = y(endAngle, endInnerRadius);
+
+            d.x3 = x(endAngle, endOuterRadius);
+            d.y3 = y(endAngle, endOuterRadius);
+
+            d.x4 = x(startAngle, startOuterRadius);
+            d.y4 = y(startAngle, startOuterRadius);
+
+            //CURVE CONTROL POINTS
+            let midAngle = startAngle + (segmentAngle / 2)
+            let midInnerRadius = holeRadius + (((i + 0.5) / segmentsPerCoil) * coilWidth)
+            let midOuterRadius = holeRadius + (((i + 0.5) / segmentsPerCoil) * coilWidth) + coilWidth;
+
+            //MID POINTS, WHERE THE CURVE WILL PASS THRU
+            d.mid1x = x(midAngle, midInnerRadius);
+            d.mid1y = y(midAngle, midInnerRadius);
+
+            d.mid2x = x(midAngle, midOuterRadius);
+            d.mid2y = y(midAngle, midOuterRadius);
+
+            //FROM https://stackoverflow.com/questions/5634460/quadratic-b%C3%A9zier-curve-calculate-points
+            d.controlPoint1x = (d.mid1x - (0.25 * d.x1) - (0.25 * d.x2)) / 0.5;
+            d.controlPoint1y = (d.mid1y - (0.25 * d.y1) - (0.25 * d.y2)) / 0.5;
+
+            d.controlPoint2x = (d.mid2x - (0.25 * d.x3) - (0.25 * d.x4)) / 0.5;
+            d.controlPoint2y = (d.mid2y - (0.25 * d.y3) - (0.25 * d.y4)) / 0.5;
+
+            //console.log(d);
+
+        };
+
+        function convertTextToNumbers(d) {
+            d.year = +d.year;
+            d.month = +d.month;
+            d.value = +d.value;
+            return d;
+        };
+    </script>
+</body>
